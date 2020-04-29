@@ -19,7 +19,7 @@ Optional - Location of the CSV file (which lists hosts for RBS deploy) for impor
 Optional - Credentials for changing the Log On As account for RBS (specifically for registering SQL Databases through Rubrik)
 
 .EXAMPLE
-.\InstallRBS.ps1 -RubrikCluster 172.24.17.13
+.\ InstallRBS_SQL.ps1 -RubrikCluster 172.24.17.13
 Enter in Credentials for the Rubrik Cluster first
 Then enter in Credentials used for the RBS LogOn As (Note that credentials should be entered in the DOMAIN\username format)
 
@@ -40,7 +40,7 @@ Param(
 
     # Location of CSV file for import
     [Parameter(Mandatory=$false)]
-    [string]$CSVLoc #,
+    [string]$CSVLoc = "C:\hosts.csv",
     
     # Parameter for changing Log On As Account for RBS Installation
     [Parameter(Mandatory=$true)]
@@ -53,14 +53,14 @@ Start-Transcript -Path C:\output.txt -Append
 # Set External Variables #
 ##########################
 
-$CSVLoc = "C:\"
-$csv = Import-Csv $CSVLoc"\hosts.csv"
+$csv = Import-Csv $CSVLoc
 $Out = "C:\RubrikBackupService.zip"
-$RubrikConnection = @{
+
+<#$RubrikConnection = @{
     Server = $RubrikCluster
     RubrikCreds = $RubrikCreds
-                     }
-#$LogOnAsCreds = Get-Credential -Message "Enter the Username (eg. DOMAIN\name) and Password for your RBS 'Log On As' Account."
+                     } #>
+         
 $ReadPass = (New-Object PSCredential $LogOnAsCreds.Username,$LogOnAsCreds.Password).GetNetworkCredential().Password
 
 
@@ -140,9 +140,10 @@ Write-Host "The Copy and Installation Process will now start again for any other
 
 Stop-Transcript
 
-
-# Error check if host does not exist or typo
-# Check against existing machines/VM/RBS installed
-# 
+<# 
+ Additions for the future:
+ Error check if host does not exist or typo
+ Check against existing machines/VM/RBS installed
+#> 
 
 
